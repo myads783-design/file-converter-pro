@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>File Converter Pro</title>
 
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Libs (tetap sama) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
@@ -17,132 +22,556 @@
 
   <style>
     :root{
-      --bg-a:#667eea; --bg-b:#764ba2;
-      --card:#fff; --text:#333; --muted:#666;
-      --accent:#667eea; --accent-2:#764ba2;
-      --radius:20px;
+      --bg-a:#0f172a;
+      --bg-b:#020617;
+      --accent:#4f46e5;
+      --accent-soft:#6366f1;
+      --accent-2:#22c55e;
+      --card:#020617;
+      --card-soft:rgba(15,23,42,0.85);
+      --border:#1f2937;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --radius-lg:22px;
+      --radius-md:14px;
+      --shadow-soft:0 22px 60px rgba(15,23,42,.65);
     }
-    *{box-sizing:border-box}
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
     body{
-      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(135deg,var(--bg-a),var(--bg-b));
-      color:#fff; margin:0; padding:0; text-align:center;
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      min-height:100vh;
+      background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
+                 radial-gradient(circle at bottom,#111827 0,transparent 60%),
+                 linear-gradient(135deg,var(--bg-a),var(--bg-b));
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:20px;
     }
-    header{padding:40px 20px}
-    h1{font-size:2.2rem; margin:.25rem 0 10px}
-    p.lead{font-size:1.05rem; color:#f1f1f1}
 
-    .container{
-      max-width:860px; margin:20px auto 40px; padding:28px;
-      background:var(--card); color:var(--text);
-      border-radius:var(--radius); box-shadow:0 5px 20px rgba(0,0,0,.2);
+    /* dekor backlight */
+    body::before,
+    body::after{
+      content:'';
+      position:fixed;
+      width:420px;
+      height:420px;
+      border-radius:999px;
+      filter:blur(80px);
+      opacity:.12;
+      z-index:-1;
+    }
+    body::before{
+      background:#4f46e5;
+      top:-80px; left:-80px;
+    }
+    body::after{
+      background:#22c55e;
+      bottom:-80px; right:-80px;
+    }
+
+    .shell{
+      width:100%;
+      max-width:1040px;
+    }
+
+    /* NAV */
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .brand-logo{
+      width:34px; height:34px;
+      border-radius:12px;
+      background:conic-gradient(from 140deg,#4f46e5,#22c55e,#06b6d4,#4f46e5);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:0 10px 30px rgba(15,23,42,.7);
+    }
+    .brand-title{
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:.02em;
+    }
+    .brand-sub{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .tag-beta{
+      font-size:11px;
+      padding:4px 9px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.6);
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .tag-dot{
+      width:6px;height:6px;border-radius:999px;background:#22c55e;
+    }
+
+    /* HERO */
+    .hero{
       text-align:left;
+      margin-bottom:20px;
+    }
+    .hero-title{
+      font-size:2rem;
+      line-height:1.2;
+      margin-bottom:6px;
+    }
+    .hero-title span{
+      background:linear-gradient(135deg,#e5e7eb,#a5b4fc);
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+    .hero-sub{
+      font-size:.98rem;
+      color:var(--muted);
+      max-width:520px;
     }
 
-    /* BAR UTAMA */
+    /* LAYOUT UTAMA */
+    .main-grid{
+      display:grid;
+      grid-template-columns:minmax(0,2.1fr) minmax(0,1.4fr);
+      gap:18px;
+      align-items:flex-start;
+    }
+
+    .card{
+      background:radial-gradient(circle at top left,rgba(248,250,252,.02),transparent 55%),
+                 var(--card-soft);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(148,163,184,.22);
+      box-shadow:var(--shadow-soft);
+      padding:20px 20px 18px;
+      backdrop-filter:blur(24px);
+    }
+
+    /* AREA KONVERTER */
+    .card-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+      gap:8px;
+    }
+    .card-header-left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .card-title{
+      font-size:1.02rem;
+      font-weight:600;
+    }
+    .card-sub{
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    .pill-soft{
+      padding:4px 9px;
+      border-radius:999px;
+      background:rgba(15,23,42,.9);
+      border:1px solid rgba(75,85,99,.8);
+      font-size:.78rem;
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .pill-soft span.badge-dot{
+      width:7px;height:7px;border-radius:999px;background:#22c55e;
+      box-shadow:0 0 0 4px rgba(34,197,94,.18);
+    }
+
     .bar{
-      display:grid; gap:12px; align-items:center;
-      grid-template-columns:1fr max-content max-content;
+      display:grid;
+      gap:10px;
+      grid-template-columns:minmax(0,1.4fr) minmax(0,1.1fr) max-content;
+      align-items:stretch;
+      margin-bottom:10px;
     }
-    .bar .control{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .bar select, .bar input[type=file], .btn{
-      padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb; font-size:1rem;
-    }
-    .btn{
-      background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600;
-      transition:.2s; padding:10px 16px;
-    }
-    .btn:hover{filter:brightness(.95)}
-    .btn.secondary{background:#e5e7eb; color:#111}
-    .btn.outline{background:#fff; color:var(--accent); border:1px solid var(--accent)}
-
-    /* OPSI BAWAH */
-    #options{
-      margin-top:18px;
-      padding-top:14px;
-      border-top:1px dashed #e5e7eb;
-    }
-    .options-grid{
-      display:grid; gap:14px;
-      grid-template-columns:repeat(3, minmax(140px,1fr));
-    }
-    .field label{
-      display:block; font-size:.9rem; font-weight:600; color:var(--muted); margin-bottom:6px;
-    }
-    .field input, .field select{
-      width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:10px; font-size:1rem;
-      background:#fff; color:inherit;
-    }
-
-    .hint{
-      margin-top:8px; color:var(--muted); font-size:.9rem; text-align:center;
-    }
-
-    /* BAR BAWAH (ZIP, BERSIHKAN) */
-    .actions{
-      display:flex; gap:10px; justify-content:center; margin-top:16px;
+    .control{
+      display:flex;
+      align-items:center;
+      gap:8px;
       flex-wrap:wrap;
     }
 
-    /* OUTPUT */
-    #output{margin-top:22px; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
-    canvas{width:100%; border:1px solid #e5e7eb; border-radius:10px}
+    input[type=file],
+    select{
+      width:100%;
+      padding:9px 11px;
+      border-radius:var(--radius-md);
+      border:1px solid var(--border);
+      background:rgba(15,23,42,.92);
+      color:var(--text);
+      font-size:.9rem;
+      outline:none;
+      transition:border-color .16s, box-shadow .16s, background .16s;
+    }
+    input[type=file]:hover,
+    select:hover{
+      border-color:#4f46e5;
+      box-shadow:0 0 0 1px rgba(79,70,229,.40);
+    }
+
+    .btn{
+      padding:10px 18px;
+      border-radius:999px;
+      border:none;
+      font-size:.9rem;
+      font-weight:600;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      white-space:nowrap;
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease, background .15s;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent-soft));
+      color:#f9fafb;
+      box-shadow:0 12px 30px rgba(79,70,229,.55);
+    }
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.02);
+    }
+    .btn-outline{
+      background:rgba(15,23,42,.9);
+      border:1px solid rgba(148,163,184,.6);
+      color:var(--text);
+    }
+    .btn-ghost{
+      background:transparent;
+      border:1px solid rgba(55,65,81,.8);
+      color:var(--muted);
+    }
+    .btn-ghost:hover,
+    .btn-outline:hover{
+      border-color:#4f46e5;
+      color:#e5e7eb;
+    }
+
+    .btn-icon{
+      font-size:1.1rem;
+    }
+
+    #options{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px dashed rgba(55,65,81,.9);
+    }
+
+    .options-grid{
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:4px;
+    }
+    .field label{
+      display:block;
+      font-size:.78rem;
+      font-weight:500;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .field input,
+    .field select{
+      width:100%;
+      padding:8px 10px;
+      border-radius:var(--radius-md);
+      border:1px solid var(--border);
+      background:rgba(15,23,42,.92);
+      color:var(--text);
+      font-size:.86rem;
+      outline:none;
+      transition:border-color .16s, box-shadow .16s, background .16s;
+    }
+    .field input:focus,
+    .field select:focus{
+      border-color:#4f46e5;
+      box-shadow:0 0 0 1px rgba(79,70,229,.5);
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:.82rem;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:7px;
+    }
+    .hint-icon{
+      font-size:.9rem;
+      opacity:.85;
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    #output{
+      margin-top:14px;
+      padding-top:10px;
+      border-top:1px solid rgba(31,41,55,.9);
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    }
+
+    canvas{
+      width:100%;
+      border-radius:12px;
+      border:1px solid rgba(31,41,55,.9);
+      background:#020617;
+    }
+
     a.download-link{
-      display:inline-block; text-decoration:none; background:var(--accent-2); color:#fff;
-      padding:8px 12px; border-radius:10px; margin-top:8px; text-align:center; width:100%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      text-decoration:none;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#f9fafb;
+      padding:8px 10px;
+      border-radius:999px;
+      margin-top:8px;
+      font-size:.85rem;
+      font-weight:500;
+      box-shadow:0 10px 26px rgba(22,163,74,.45);
+    }
+
+    a.download-link::before{
+      content:'⬇';
+      font-size:.9rem;
+    }
+
+    /* SIDEBAR INFO */
+    .sidebar{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .side-card{
+      background:radial-gradient(circle at top left,rgba(248,250,252,.02),transparent 55%),
+                 rgba(15,23,42,.92);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(148,163,184,.16);
+      padding:16px 16px 14px;
+      backdrop-filter:blur(18px);
+    }
+    .side-title{
+      font-size:.95rem;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .side-sub{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:4px;
+    }
+    .chip{
+      font-size:.78rem;
+      padding:4px 9px;
+      border-radius:999px;
+      background:rgba(15,23,42,1);
+      border:1px solid rgba(55,65,81,.9);
+      color:var(--muted);
+    }
+    .side-list{
+      list-style:none;
+      margin-top:6px;
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    .side-list li{
+      display:flex;
+      align-items:flex-start;
+      gap:6px;
+      margin-bottom:4px;
+    }
+    .side-list li span{
+      margin-top:2px;
+    }
+
+    footer{
+      margin-top:18px;
+      font-size:.75rem;
+      color:rgba(148,163,184,.8);
+      text-align:center;
     }
 
     /* RESPONSIVE */
-    @media (max-width:700px){
-      .bar{grid-template-columns:1fr}
-      .options-grid{grid-template-columns:1fr 1fr}
+    @media (max-width:900px){
+      .main-grid{
+        grid-template-columns:minmax(0,1fr);
+      }
     }
-    @media (max-width:480px){
-      .options-grid{grid-template-columns:1fr}
+    @media (max-width:640px){
+      body{padding:14px;}
+      .hero-title{font-size:1.65rem;}
+      .bar{
+        grid-template-columns:1fr;
+      }
+      .options-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    @media (max-width:460px){
+      .options-grid{
+        grid-template-columns:1fr;
+      }
+      .card{
+        padding:16px 14px 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🌟 File Converter Pro</h1>
-    <p class="lead">Konversi file di browser: PDF ⇄ Gambar, TXT ⇢ PDF, Gabung/Pisah/Rotate/Watermark, OCR, dll.</p>
-  </header>
-
-  <div class="container">
-    <h3 style="text-align:center;margin-top:0">Pilih file untuk dikonversi</h3>
-
-    <div class="bar">
-      <div class="control">
-        <input type="file" id="fileInput" multiple/>
+  <div class="shell">
+    <!-- NAV -->
+    <header class="nav">
+      <div class="brand">
+        <div class="brand-logo">F</div>
+        <div>
+          <div class="brand-title">File Converter Pro</div>
+          <div class="brand-sub">All-in-one file & PDF toolkit</div>
+        </div>
       </div>
-      <select id="convertType">
-        <option value="pdf2png">PDF ➜ PNG (per halaman)</option>
-        <option value="txt2pdf">TXT ➜ PDF</option>
-        <option value="imgConvert">Gambar ➜ JPG/PNG/WebP/HEIC</option>
-        <option value="imgCompress">Kompres Gambar</option>
-        <option value="jpg2png">JPG ➜ PNG (cepat)</option>
-        <option value="png2jpg">PNG ➜ JPG (cepat)</option>
-        <option value="pdfMerge">Gabung beberapa PDF</option>
-        <option value="pdfSplit">Pisah PDF (rentang halaman)</option>
-        <option value="pdfRotate">Rotate halaman PDF</option>
-        <option value="pdfWatermark">Watermark teks di PDF</option>
-        <option value="pdfExtractImages">Ekstrak halaman PDF → PNG</option>
-        <option value="ocrImage">OCR Gambar → Teks (beta)</option>
-      </select>
-      <button class="btn" id="convertBtn">Konversi Sekarang</button>
-    </div>
+      <div class="tag-beta">
+        <span class="tag-dot"></span>
+        <span>Runs 100% in your browser</span>
+      </div>
+    </header>
 
-    <!-- Opsi dinamis muncul di sini -->
-    <div id="options"></div>
+    <!-- HERO TEXT -->
+    <section class="hero">
+      <h1 class="hero-title">
+        Ubah & kelola <span>file kamu</span> langsung dari browser.
+      </h1>
+      <p class="hero-sub">
+        Konversi PDF ⇄ gambar, TXT ⇢ PDF, gabung/pisah/rotate/watermark PDF, kompres & konversi gambar, hingga OCR – tanpa upload ke server.
+      </p>
+    </section>
 
-    <div class="hint">Tips: bisa pilih banyak file. Klik <b>“Zip Hasil”</b> untuk mengunduh sekaligus.</div>
+    <!-- MAIN GRID -->
+    <main class="main-grid">
+      <!-- KIRI: KONVERTER -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-title">Mulai konversi</div>
+            <div class="card-sub">Pilih file, tentukan tipe konversi, lalu klik <b>Konversi Sekarang</b>.</div>
+          </div>
+          <div class="pill-soft">
+            <span class="badge-dot"></span>
+            <span>Mendukung banyak file sekaligus</span>
+          </div>
+        </div>
 
-    <div class="actions">
-      <button class="btn outline" id="zipBtn" title="Kumpulkan semua hasil jadi satu ZIP">Zip Hasil</button>
-      <button class="btn secondary" id="clearBtn" title="Bersihkan area hasil">Bersihkan</button>
-    </div>
+        <div class="bar">
+          <div class="control">
+            <input type="file" id="fileInput" multiple/>
+          </div>
 
-    <div id="output"></div>
+          <select id="convertType">
+            <option value="pdf2png">PDF ➜ PNG (per halaman)</option>
+            <option value="txt2pdf">TXT ➜ PDF</option>
+            <option value="imgConvert">Gambar ➜ JPG/PNG/WebP/HEIC</option>
+            <option value="imgCompress">Kompres Gambar</option>
+            <option value="jpg2png">JPG ➜ PNG (cepat)</option>
+            <option value="png2jpg">PNG ➜ JPG (cepat)</option>
+            <option value="pdfMerge">Gabung beberapa PDF</option>
+            <option value="pdfSplit">Pisah PDF (rentang halaman)</option>
+            <option value="pdfRotate">Rotate halaman PDF</option>
+            <option value="pdfWatermark">Watermark teks di PDF</option>
+            <option value="pdfExtractImages">Ekstrak halaman PDF → PNG</option>
+            <option value="ocrImage">OCR Gambar → Teks (beta)</option>
+          </select>
+
+          <button class="btn btn-primary" id="convertBtn">
+            <span class="btn-icon">⚡</span>
+            <span>Konversi Sekarang</span>
+          </button>
+        </div>
+
+        <!-- Opsi dinamis -->
+        <div id="options"></div>
+
+        <div class="hint">
+          <span class="hint-icon">💡</span>
+          <span>Bisa pilih banyak file sekaligus. Gunakan <b>Zip Hasil</b> untuk mengunduh semua output dalam satu paket.</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-outline" id="zipBtn" title="Kumpulkan semua hasil jadi satu ZIP">
+            Zip Hasil
+          </button>
+          <button class="btn btn-ghost" id="clearBtn" title="Bersihkan area hasil">
+            Bersihkan hasil
+          </button>
+        </div>
+
+        <div id="output"></div>
+      </section>
+
+      <!-- KANAN: INFO -->
+      <aside class="sidebar">
+        <div class="side-card">
+          <div class="side-title">Mode konversi populer</div>
+          <p class="side-sub">Pilihan paling sering dipakai pengguna untuk kebutuhan harian.</p>
+          <div class="chips">
+            <span class="chip">PDF ➜ PNG halaman</span>
+            <span class="chip">Gabung beberapa PDF</span>
+            <span class="chip">Kompres gambar besar</span>
+            <span class="chip">TXT ➜ PDF rapi</span>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <div class="side-title">Tips hasil maksimal</div>
+          <ul class="side-list">
+            <li><span>•</span><span>Gunakan skala 2–3x saat render PDF ➜ PNG untuk hasil tajam.</span></li>
+            <li><span>•</span><span>Untuk kompres gambar, mulai dari kualitas 0.8 lalu sesuaikan.</span></li>
+            <li><span>•</span><span>OCR berjalan terbaik pada gambar teks yang jelas & tidak blur.</span></li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      File Converter Pro · berjalan di sisi klien · tidak menyimpan file kamu di server.
+    </footer>
   </div>
 
   <script>
@@ -167,7 +596,7 @@
       const a=document.createElement('a');
       a.className='download-link'; a.download=name;
       a.href = blobOrUrl instanceof Blob ? URL.createObjectURL(blobOrUrl) : blobOrUrl;
-      a.textContent = `⬇️ ${name}`;
+      a.textContent = name;
       wrap.appendChild(a); output.appendChild(wrap);
     }
 
@@ -209,9 +638,9 @@
           '<div class="field"><label>Opacity (0–1)</label><input id="wmOpacity" type="number" value="0.15" step="0.05" min="0.05" max="1"/></div>' +
           wrapEnd;
       } else {
-        html=''; // tipe lain tidak butuh opsi
+        html='';
       }
-      options.innerHTML = html; // ← opsi selalu di wadah sendiri → tidak tumpang tindih
+      options.innerHTML = html;
     }
     $('#convertType').addEventListener('change',renderOptions);
     renderOptions();
@@ -223,7 +652,7 @@
     });
     $('#clearBtn').addEventListener('click', ()=>{ output.innerHTML=''; zip.files={}; });
 
-    // ===== LOGIKA KONVERSI (ringkas, sama dengan sebelumnya) =====
+    // ===== LOGIKA KONVERSI (tetap sama) =====
     document.getElementById('convertBtn').addEventListener('click', async ()=>{
       const type = $('#convertType').value;
       const fileInput = $('#fileInput');
